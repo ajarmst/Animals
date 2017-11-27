@@ -1,0 +1,23 @@
+Is it a mammal?
+Is it a primate?
+Does it normally wear clothing?
+Human
+###
+###
+Gorilla
+###
+###
+Is it a predator?
+Tiger
+###
+###
+Shrew
+###
+###
+Is it an insect?
+Ant
+###
+###
+Shark
+###
+###
