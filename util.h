@@ -5,7 +5,7 @@
 //Some utility functions of general value.
 
 //Size of general purpose buffer for user input.
-define INPUTBUFFSIZE 255
+#define INPUTBUFFSIZE 255
 
 //Remove padding, convert to lower case DESTRUCTIVE
 char * CleanString(char * sz);

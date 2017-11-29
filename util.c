@@ -1,6 +1,8 @@
-#include <stdlib>
-#include <stdio>
-#include <ctype>
+#include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include "util.h"
 
 //Remove padding, convert to lower case DESTRUCTIVE
 char * CleanString(char * sz)
@@ -73,11 +75,11 @@ int GetInt(char * prompt)
 
 
 //Get a y or n response from user.  Y returns 1, else 0
+//Will keep asking until it gets something intelligible.
 int GetYorN(char * prompt)
 {
     int gotResponse = 0;
     int retval = 0;
-    char * pos = NULL; //Pointer to location in buffer
     char * buffer = (char *)malloc(INPUTBUFFSIZE);
     if (!buffer)// DMA Failure
     {
@@ -106,18 +108,20 @@ int GetYorN(char * prompt)
 #endif
         }
         //We now have a response from the user.  Is it what we're looking for?
-        if(!strcmp(buffer,"y") && !strcmp(buffer,"yes"))
+        buffer = CleanString(buffer); //Convert to lcase, strip whitespace
+
+        if(!strcmp(buffer,"y") || !strcmp(buffer,"yes"))
         {
-            gotresponse = 1;
-            retval = 1'
+            gotResponse = 1;
+            retval = 1;
         }
-        else if(!strcmp(buff,"n") && !strcmp(buffer,"no"))
+        else if(!strcmp(buffer,"n") || !strcmp(buffer,"no"))
         {
-            gotresponse = 1;
+            gotResponse = 1;
             retval = 0;
         }
-        else gotresponse = 0;
-    } while (!gotresponse);
+        else gotResponse = 0;
+    } while (!gotResponse);
     //Free the memory
     free(buffer);
     return retval;
@@ -140,20 +144,18 @@ char * GetString(char * prompt, char * buffer, int buffersize)
 #endif
     }
 
-    do
+    printf("%s",prompt);
+    fflush(stdout);
+    fflush(stdin);
+    if (!fgets(buffer, buffersize, stdin)) // Error talking to user
     {
-        printf("%s",prompt);
-        fflush(stdout);
-        fflush(stdin);
-        if (!fgets(buffer, buffersize, stdin)) // Error talking to user
-        {
-            fprintf(stderr, "Error: Unable to get value from user.\n");
+        fprintf(stderr, "Error: Unable to get value from user.\n");
 #ifdef _DEBUG
-            fflush(stdin); //Make sure there's nothing lurking in the buffer.
-            printf("Press Enter to Exit");
-            fgetc(stdin);
-            exit(EXIT_FAILURE);
+        fflush(stdin); //Make sure there's nothing lurking in the buffer.
+        printf("Press Enter to Exit");
+        fgetc(stdin);
+        exit(EXIT_FAILURE);
 #endif
-        }
-        return buffer;
+    }
+    return buffer;
 }
