@@ -18,6 +18,26 @@ Is it an insect?
 Ant
 ###
 ###
+Is it a spider?
+Is it large?
+Tarantula
+###
+###
+Black Widow
+###
+###
+Is it slimy?
+Slug
+###
+###
+Is it a bird?
+Ostrich
+###
+###
+Is its skeleton made from cartilage?
 Shark
+###
+###
+Tuna
 ###
 ###

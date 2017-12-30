@@ -4,12 +4,72 @@
 #include <string.h>
 #include "util.h"
 
+
+//strip trailing whitespace and ctrl characters
+char * CleanStringTR(char * sz)
+{
+  //Easy. Just start at the end, and work back to first printing character.
+    char * p = sz;
+    //find the null
+    while(*p)++p;
+    //work backwards
+    while(p > sz)
+    {
+        if(!isgraph(*p)) *(p--) = 0;
+        else break;
+    }
+    return sz;
+}
+
+
+//Remove padding, CR, DESTRUCTIVE
+char * CleanStringCR(char * sz)
+{
+    //This modifies the input string by removing any
+    //leading or trailing whitespace, CR
+    char * p = sz; //Pointer to first char
+    char * q = sz; //Insertion point
+    int leadspace = 1; // Am I in leading whitepace?
+    while(*p)// While I haven't reached the null
+    {
+      if(!isgraph(*p)) //non-printing
+      {
+          if(isspace(*p))
+          {
+              if(leadspace)
+                  p++; //drop leading whitespace
+              else
+              {
+                  //Replace all whitepsace with spaces
+                  *q=' ';
+                  ++q;
+                  ++p;
+              }
+          }
+      }
+      else
+      {
+          //Done with any lead space
+          leadspace = 0;
+          *q = *p;
+          ++p;
+          ++q;
+      }
+    }
+    *q = *p;//Copy final null.
+
+    //Get rid of trailing whitespace
+    sz = CleanStringTR(sz);
+    return sz; // Return modified string
+}
+
 //Remove padding, convert to lower case DESTRUCTIVE
-char * CleanString(char * sz)
+char * CleanStringLC(char * sz)
 {
     //This modifies the input string by removing any
     //leading or trailing whitespace and converting
     //all uppercase characters to lowercase
+    sz = CleanStringCR(sz);
     char * p = sz; //Pointer to first char
     char * q = sz; //Insertion point
     while(*p)// While I haven't reached the null
@@ -29,7 +89,6 @@ char * CleanString(char * sz)
     return sz; // Return modified string
 }
 
-
 //Get an int from user
 int GetInt(char * prompt)
 {
@@ -40,17 +99,17 @@ int GetInt(char * prompt)
     if (!buffer)// DMA Failure
     {
         fprintf(stderr, "Error: DMA Failure.\n");
-        exit(EXIT_FAILURE);
 #ifdef _DEBUG
         fflush(stdin); //Make sure there's nothing lurking in the buffer.
         printf("Press Enter to Exit");
         fgetc(stdin);
 #endif
+        exit(EXIT_FAILURE);
     }
 
     do
     {
-        printf("%s",prompt);
+        printf("%s ",prompt);
         fflush(stdout);
         fflush(stdin);
         if (!fgets(buffer, INPUTBUFFSIZE, stdin)) // Error talking to user
@@ -94,7 +153,7 @@ int GetYorN(char * prompt)
 
     do
     {
-        printf("%s",prompt);
+        printf("%s ",prompt);
         fflush(stdout);
         fflush(stdin);
         if (!fgets(buffer, INPUTBUFFSIZE, stdin)) // Error talking to user
@@ -108,7 +167,7 @@ int GetYorN(char * prompt)
 #endif
         }
         //We now have a response from the user.  Is it what we're looking for?
-        buffer = CleanString(buffer); //Convert to lcase, strip whitespace
+        buffer = CleanStringLC(buffer); //Convert to lcase, strip whitespace
 
         if(!strcmp(buffer,"y") || !strcmp(buffer,"yes"))
         {
@@ -144,7 +203,7 @@ char * GetString(char * prompt, char * buffer, int buffersize)
 #endif
     }
 
-    printf("%s",prompt);
+    printf("%s ",prompt);
     fflush(stdout);
     fflush(stdin);
     if (!fgets(buffer, buffersize, stdin)) // Error talking to user
@@ -157,5 +216,5 @@ char * GetString(char * prompt, char * buffer, int buffersize)
         exit(EXIT_FAILURE);
 #endif
     }
-    return buffer;
+    return CleanStringCR(buffer);
 }

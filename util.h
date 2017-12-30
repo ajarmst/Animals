@@ -7,8 +7,14 @@
 //Size of general purpose buffer for user input.
 #define INPUTBUFFSIZE 255
 
-//Remove padding, convert to lower case DESTRUCTIVE
-char * CleanString(char * sz);
+//strip trailing whitespace and ctrl characters
+char * CleanStringTR(char * sz);
+
+//Remove padding, carriage returns and control
+char * CleanStringCR(char * sz);
+
+//Remove padding, internal spaces, convert to lower case DESTRUCTIVE
+char * CleanStringLC(char * sz);
 
 //Get an int from user
 int GetInt(char * prompt);

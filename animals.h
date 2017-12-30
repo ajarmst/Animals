@@ -4,6 +4,8 @@
 
 #define ANITEXTSIZE 512 //Number of chars in node text
 #define NULLSTRING "###" //Symbol in file to indicate NULL
+#define PRINTINDENTSIZE 4 //Amount to indent each level when printing tree
+
 //Forward declaration so that "Node *" makes sense
 struct node;
 
@@ -12,6 +14,12 @@ typedef struct node
     struct node * yes;
     struct node * no;
 }Node;
+
+//Play one round of the game (involves recursive traversal to leaf)
+void PlayRound(Node * root);
+
+//Handle a leaf node (guess)
+void PlayLeaf(Node * leaf);
 
 //Display the contents of a tree
 void PrintTree(Node * root, int indent);

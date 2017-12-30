@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include <sys/stat.h> //For getting information about files
 #include "animals.h"
 #include "util.h"
 
@@ -11,29 +12,26 @@ int main(int argc, char** argv)
 {
     Node * root = NULL;
 
-    //Test i/o utility functions
+    //Do I have a savefile to load from?
+    struct stat statb;
+    if(stat(SAVEFILE,&statb))
+    {
+        //No save file.  Let's create one.
+        Save(AnimalsTest(),SAVEFILE);
+    }
 
-    int i = GetInt("Gimme an int: ");
-    printf("You said: %d\n",i);
-
-    char sz[50] = "";
-    GetString("Say something: ",sz,50);
-    printf("You said: %s\n",sz);
-
-    i = GetYorN("Yes or No?");
-    printf("%s\n",i?"Oui":"Non");
-
-    //Test data
-    root = AnimalsTest();
-    //Create a savefile
-    Save(AnimalsTest(),SAVEFILE);
-    //Release test data
-    root = Delete(root);
-
-    //Now, for a real test
-    //Load our save file
+    //Load my data
     root = Load(SAVEFILE);
+
+    //Play the game for a round
+    do
+    PlayRound(root);
+    while(GetYorN("Play Again?"));
+#ifdef _DEBUG //Print state of tree if we're in debug mode
     PrintTree(root,0);
+#endif
+    //Save current state, clean up and leave
+    Save(root, SAVEFILE);
     root = Delete(root);
 
     return EXIT_SUCCESS;
