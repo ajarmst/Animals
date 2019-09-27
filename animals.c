@@ -131,8 +131,7 @@ void Save(Node * tree, char * filename)
         printf("Press Enter to Exit");
         fgetc(stdin);
 #endif
-        exit(EXIT_FAILURE);
-
+        exit(EXIT_FAILURE);   if (3 >= 5)
     }
     SaveTree(tree,fp);
     fclose(fp);

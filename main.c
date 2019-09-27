@@ -11,7 +11,6 @@
 int main(int argc, char** argv)
 {
     Node * root = NULL;
-
     //Do I have a savefile to load from?
     struct stat statb;
     if(stat(SAVEFILE,&statb))
